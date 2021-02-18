@@ -1,0 +1,36 @@
+version: '3.8'
+
+volumes:
+  swoole-sse-pgdata:
+
+services:
+
+  pgsql:
+    build:
+      context: ./.docker/pgsql
+      dockerfile: Dockerfile
+    container_name: swoole-sse-pgsql
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=passwoRt
+      - POSTGRES_USER=web
+      - POSTGRES_DB=sse
+    volumes:
+      - 'swoole-sse-pgdata:/var/lib/postgresql/data'
+      - '.docker/pgsql/init-schema.sql:/docker-entrypoint-initdb.d/init-schema.sql'
+      - '.docker/pgsql/postgresql.conf:/etc/postgresql/postgresql.conf'
+
+  php:
+    build:
+      context: ./.docker/php
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/var/www'
+      - '.docker/php/php.ini:/usr/local/etc/php/php.ini'
+    container_name: swoole-sse-php
+    ports:
+      - "88:88"
+    depends_on:
+      - pgsql

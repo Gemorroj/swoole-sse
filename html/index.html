@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>SSE EventSource Example</title>
+    <script src="eventsource.js"></script>
+
+    <script>
+        const es = new EventSource('http://localhost:88');
+        const listener = function (event) {
+            const type = event.type;
+
+            window.console.log(`${type}: ${event.data || es.url}`);
+            if (type === 'result') {
+                es.close();
+            }
+        };
+
+        es.addEventListener('open', listener);
+        es.addEventListener('message', listener);
+        es.addEventListener('error', listener);
+        es.addEventListener('result', listener);
+    </script>
+
+</head>
+<body>
+</body>
+</html>
