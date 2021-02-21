@@ -42,6 +42,7 @@ $http->on('request', static function (Request $request, Response $response) use 
             $response->write("id: $lastEventId\n");
             $response->write("data: " . \json_encode($result, \JSON_THROW_ON_ERROR) . "\n\n");
         }
+        //Co::sleep(10); // that or use pgsqlGetNotify timeout?
     }
 
     $response->end();
